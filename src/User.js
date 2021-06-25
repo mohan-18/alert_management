@@ -19,23 +19,28 @@ function User() {
 
 	const onMessageSubmit = async (e) => {
 		e.preventDefault();
-		
-			let url="https://alertserver18.herokuapp.com/alert/";
-           
-			let response = await axios.post(url, {
-				pincode: pin,
-				contact: contact
-			  });
-			console.log(response);
-			
-			
-			url=`https://alertserver18.herokuapp.com/branch/pin/${pin}`;
+
+		url=`https://alertserver18.herokuapp.com/branch/pin/${pin}`;
 			response = await axios.get(url);
             let data = response.data;
-			setdata(data);
-            console.log(data);
+
+		if(data.length>0){
+			console.log("found");
+		url="https://alertserver18.herokuapp.com/alert/";
+        
+			response = await axios.post(url, {
+			pincode: pin,
+			contact: contact
+			  });
+			  socket.emit('alert',{pin,contact});
+		}else{
+			console.log("not found");
+			data = "Sorry No branches serving this pincode right now";
+			socket.emit('noBranch',{pin,contact});
+		}	
+			
+		setdata(data);
            
-			socket.emit('alert',{pin,contact});
 			
 	}
 	const onTextChangepin = (e) => {
