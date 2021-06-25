@@ -62,7 +62,7 @@ function Admin() {
                 <br/>
 				{ 
 				datanoti.map(ele=>(
-					<Alert key={ele._id} pincode={ele.Pincode} 
+					<Alert key={ele._id} pincode={ele.Pincode} branch={ele.Branch_Name}
 					contact={ele.Contact} created={ele.createdAt} />
 				))
 			}

@@ -34,6 +34,8 @@ function Alert(props) {
           Contact: {props.contact}
         </Typography>
         <Typography className={classes.pos} color="textSecondary">
+        Branch:{props.branch}
+          <br/>
          {props.created}
         </Typography>
       </CardContent>

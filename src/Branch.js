@@ -14,7 +14,9 @@ toast.configure();
 function Branch() {
 	const [brname,setbrname]=useState("");
 	const [dataArr,setdata]=useState([]);
+	const [alert,setalert]=useState("");
 	br=brname;
+	
 	useEffect(()=>{
 		socket=io("https://alertserver18.herokuapp.com/");
 	},[])
@@ -23,27 +25,38 @@ function Branch() {
         socket.on("notification", async(pin,contact) => {
 		let url=`https://alertserver18.herokuapp.com/alert/${br}`;
 
-
-        console.log("hit",url,br);
-
 		const response = await axios.get(url);
 		let data = response.data;
 		let sorted_data=data.reverse();
 		console.log(sorted_data);
 		setdata(sorted_data);
 		toast.success(`A user with ${contact} is looking in the pincode ${pin}`);
+
         });
     }, []);
     
-	const onMessageSubmit = (e) => {
+	const onMessageSubmit = async (e) => {
 		e.preventDefault();
+		let url =`https://alertserver18.herokuapp.com/branch/branch/${brname}`;
+        
+		let response = await axios.get(url);
+		let data = response.data;
+		if(data.length===0){
+			setalert(`No branch with name '${brname}' exists`);
+			return;
+		}
+		console.log("mohan 51");
 		socket.emit('join',{brname});
-		let url=`https://alertserver18.herokuapp.com/alert/${brname}`;
-		console.log(brname,url);
+		url=`https://alertserver18.herokuapp.com/alert/${brname}`;
+		
 		axios.get(url)
             .then(response => {
                 let data = response.data;
 				let sorteddata=data.reverse();
+				if(dataArr.length===0){
+					setalert(`No Alerts in the '${brname}' till now`);
+				}else
+				setalert("");
 				setdata(sorteddata);
             })
             .catch(err => {
@@ -51,7 +64,9 @@ function Branch() {
             })
 	}
 	const onTextChange = (e) => {
-		setbrname(e.target.value);
+		let str=String(e.target.value);
+		str=str.toLowerCase();
+		setbrname(str);
 		}
 
 
@@ -64,9 +79,12 @@ function Branch() {
 				</div>
 				<Button style={{'marginTop': '8px','marginBottom': '8px'}} variant="contained" color="primary" onClick={onMessageSubmit}>Enter</Button>
 			</form>
+			{
+				<h1>{alert}</h1>
+			}
 			{ 
 				dataArr.map(ele=>(
-					<Alert key={ele._id} pincode={ele.Pincode} 
+					<Alert key={ele._id} pincode={ele.Pincode} branch={ele.Branch_Name}
 					contact={ele.Contact} created={ele.createdAt} />
 				))
 			}

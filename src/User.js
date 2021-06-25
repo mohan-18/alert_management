@@ -24,20 +24,21 @@ function User() {
 		let url=`https://alertserver18.herokuapp.com/branch/pin/${pin}`;
 			let response = await axios.get(url);
             let data = response.data;
-
-		if(data.length>0){
-			console.log("found");
-		url="https://alertserver18.herokuapp.com/alert/";
+		
+			url="https://alertserver18.herokuapp.com/alert/";
         
 			response = await axios.post(url, {
 			pincode: pin,
 			contact: contact
 			  });
 			  setdata(data);
+
+		if(data.length>0){
+			console.log("found");
 			  socket.emit('alert',{pin,contact});
 		}else{
 			console.log("not found");
-			data = `${pin} : Sorry No branches serving this pincode right now`;
+			data = `'${pin}' : Sorry No branches serving this pincode right now`;
 			setnof(data);
 			socket.emit('noBranch',{pin,contact});
 		}	
