@@ -64,7 +64,7 @@ function User() {
 					<TextField name="brname" onChange={onTextChangepin} value={pin} label="Enter a pincode" />
 				</div>
 				<div>
-					<TextField name="contact" onChange={onTextChangeno} value={contact} label="Enter your contact details" />
+					<TextField name="contact" onChange={onTextChangeno} value={contact} label="Enter your contact details"/>
 				</div>
 				<Button style={{'marginTop': '8px','marginBottom': '8px'}} variant="contained" color="primary" onClick={onMessageSubmit}>Send</Button>
 	

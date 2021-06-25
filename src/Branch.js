@@ -29,6 +29,13 @@ function Branch() {
 		let data = response.data;
 		let sorted_data=data.reverse();
 		console.log(sorted_data);
+		if(data.length===0){
+			setalert(`No branch with name '${brname}' exists`);
+			
+		}else{
+			setalert("");
+		}
+
 		setdata(sorted_data);
 		toast.success(`A user with ${contact} is looking in the pincode ${pin}`);
 
@@ -44,8 +51,10 @@ function Branch() {
 		if(data.length===0){
 			setalert(`No branch with name '${brname}' exists`);
 			return;
+		}else{
+			setalert("");
 		}
-		console.log("mohan 51");
+		
 		socket.emit('join',{brname});
 		url=`https://alertserver18.herokuapp.com/alert/${brname}`;
 		
@@ -53,7 +62,7 @@ function Branch() {
             .then(response => {
                 let data = response.data;
 				let sorteddata=data.reverse();
-				if(dataArr.length===0){
+				if(data.length===0){
 					setalert(`No Alerts in the '${brname}' till now`);
 				}else
 				setalert("");
