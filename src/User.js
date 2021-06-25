@@ -12,6 +12,7 @@ function User() {
 	const [pin,setpin]=useState("");
 	const [contact,setcontact]=useState("");
 	const [dataArr,setdata]=useState([]);
+	const [nof,setnof]=useState("");
 	useEffect(()=>{
 		socket=io("https://alertserver18.herokuapp.com/");
 	},[])
@@ -20,8 +21,8 @@ function User() {
 	const onMessageSubmit = async (e) => {
 		e.preventDefault();
 
-		url=`https://alertserver18.herokuapp.com/branch/pin/${pin}`;
-			response = await axios.get(url);
+		let url=`https://alertserver18.herokuapp.com/branch/pin/${pin}`;
+			let response = await axios.get(url);
             let data = response.data;
 
 		if(data.length>0){
@@ -32,14 +33,16 @@ function User() {
 			pincode: pin,
 			contact: contact
 			  });
+			  setdata(data);
 			  socket.emit('alert',{pin,contact});
 		}else{
 			console.log("not found");
-			data = "Sorry No branches serving this pincode right now";
+			data = `${pin} : Sorry No branches serving this pincode right now`;
+			setnof(data);
 			socket.emit('noBranch',{pin,contact});
 		}	
 			
-		setdata(data);
+		
            
 			
 	}
@@ -65,8 +68,12 @@ function User() {
 				<Button style={{'marginTop': '8px','marginBottom': '8px'}} variant="contained" color="primary" onClick={onMessageSubmit}>Send</Button>
 	
 			</form>
+			{
+				<h2>{nof}</h2>
+			}
 			
-			{ 
+			{   
+
 				dataArr.map(ele=>(
 					<Cardview key={ele._id} branch_incharge={ele.Branch_Incharge} branch_name={ele.Branch_Name} 
 					contact={ele.Contact_Number} address={ele.Address} city={ele.City} />
